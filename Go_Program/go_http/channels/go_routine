@@ -1,0 +1,46 @@
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "net/http"
+    "time"
+)
+
+func fetch(url string, ch chan<- string) {
+    start := time.Now()
+    resp, err := http.Get(url)
+    if err != nil {
+        ch <- fmt.Sprintf("Error fetching %s: %v", url, err)
+        return
+    }
+    defer resp.Body.Close()
+
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        ch <- fmt.Sprintf("Error reading %s: %v", url, err)
+        return
+    }
+
+    ch <- fmt.Sprintf("%s: %d bytes in %v", url, len(body), time.Since(start))
+}
+
+func main() {
+    urls := []string{
+        "https://www.google.com",
+        "https://www.github.com",
+        "https://www.stackoverflow.com",
+    }
+
+    ch := make(chan string)
+
+    // Start a Goroutine for each URL
+    for _, url := range urls {
+        go fetch(url, ch)
+    }
+
+    // Collect results
+    for range urls {
+        fmt.Println(<-ch)
+    }
+}

@@ -27,13 +27,21 @@ func main() {
 		handlers.Login(w, r, db)
 	}).Methods("POST")
 
-	// Serve static files (uploaded files)
-	r.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
+	// // Serve static files (uploaded files)
+	// r.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
+
+	// // File upload route (Public)
+	// uploadRouter := r.PathPrefix("/uploads").Subrouter()
+	// uploadRouter.Use(middleware.AuthMiddleware)
+	// uploadRouter.HandleFunc("/upload", handlers.UploadFile).Methods("POST")
 
 	// File upload route (Public)
 	uploadRouter := r.PathPrefix("/uploads").Subrouter()
 	uploadRouter.Use(middleware.AuthMiddleware)
 	uploadRouter.HandleFunc("/upload", handlers.UploadFile).Methods("POST")
+
+	// Serve static files (uploaded files)
+	r.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
 
 	// Task routes
 	taskRouter := r.PathPrefix("/tasks").Subrouter()
@@ -58,8 +66,6 @@ func main() {
 	log.Println("Server running on port :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
-
-
 
 // package main
 

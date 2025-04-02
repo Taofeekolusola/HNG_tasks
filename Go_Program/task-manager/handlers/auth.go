@@ -36,33 +36,6 @@ func Register(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	json.NewEncoder(w).Encode(user)
 }
 
-// func Login(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
-// 	var user models.User
-// 	var input models.User
-
-// 	err := json.NewDecoder(r.Body).Decode(&input)
-// 	if err != nil {
-// 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	// Find user by username
-// 	result := db.Where("username = ?", input.Username).First(&user)
-// 	if result.Error != nil {
-// 		http.Error(w, "User not found", http.StatusUnauthorized)
-// 		return
-// 	}
-
-// 	// Check password
-// 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
-// 	if err != nil {
-// 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-// 		return
-// 	}
-
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(user)
-// }
 
 // Secret key for signing JWT (keep this secret!)
 var jwtSecret = []byte("secretcode")
